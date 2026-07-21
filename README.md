@@ -20,13 +20,7 @@ To run the application locally, follow these steps:
 
 2. Rename the `.envexample` file to `.env` and fill in your MongoDB connection string and JWT secrets.
 
-3. Navigate to the project directory:
-
-   ```bash
-        cd reserva
-   ```
-
-4. Install dependencies for both the client and server:
+3. Install dependencies for both the client and server:
 
    ```bash
         # Backend dependencies
@@ -36,7 +30,7 @@ To run the application locally, follow these steps:
         npm install
    ```
 
-5. Run the application:
+4. Run the application:
 
    ```bash
         # Start the backend server
