@@ -1,0 +1,22 @@
+{
+  "name": "mern-stack",
+  "version": "1.0.0",
+  "description": "Scheduling and event management app",
+  "license": "MIT",
+  "author": "Pedro Setti",
+  "type": "commonjs",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server/server.js",
+    "server": "nodemon server/server.js"
+  },
+  "dependencies": {
+    "colors": "^1.4.0",
+    "dotenv": "^17.4.2",
+    "express": "^5.2.1",
+    "mongoose": "^8.24.1"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.14"
+  }
+}
