@@ -6,7 +6,42 @@
 
 It's a full-stack web application built with the **MERN stack** that enables small businesses to manage appointments, events, staff, customers, and business operations from a single platform.
 
-## How To Run
+## Usage
+
+To run the application locally, follow these steps:
+
+1. Clone the repository:
+
+   ```bash
+   git clone https://github.com/.../reserva.git
+   ```
+
+2. Rename the `.envexample` file to `.env` and fill in your MongoDB connection string and JWT secrets.
+
+3. Navigate to the project directory:
+
+   ```bash
+   cd reserva
+   ```
+
+4. Install dependencies for both the client and server:
+
+   ```bash
+        # Backend dependencies
+        npm install
+        # Frontend dependencies
+        cd client
+        npm install
+   ```
+
+5. Run the application:
+
+   ```bash
+        # Start the backend server
+        npm run server
+   ```
+
+## Demo
 
 
 ## Features
@@ -252,19 +287,6 @@ reserva/
 │
 └── README.md
 ```
-
-## Core Modules
-
-- Authentication
-- Business Management
-- Staff Management
-- Customer CRM
-- Appointment Booking
-- Calendar
-- Event Management
-- Notifications
-- Analytics
-- QR Check-In
 
 ## Typical Booking Flow
 
