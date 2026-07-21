@@ -15,7 +15,7 @@ To run the application locally, follow these steps:
 1. Clone the repository:
 
    ```bash
-        git clone https://github.com/.../reserva.git
+        git clone https://github.com/pedrohsetti/reserva.git
    ```
 
 2. Rename the `.envexample` file to `.env` and fill in your MongoDB connection string and JWT secrets.
