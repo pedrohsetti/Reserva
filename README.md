@@ -1,5 +1,7 @@
 # RESERVA
 
+This is the repo for the **Reserva** project, a full-stack web application built with the **MERN-stack** (MongoDB, Express.js, React, Node.js) for the Software Development Skills: Full-Stack 2025-26 course. You can find the coursework files and learning diary in https://github.com/pedrohsetti/Full-Stack-Development.
+
 ## About Reserva
 
 **Reserva** is an event management and scheduling platform for small businesses.
@@ -13,7 +15,7 @@ To run the application locally, follow these steps:
 1. Clone the repository:
 
    ```bash
-   git clone https://github.com/.../reserva.git
+        git clone https://github.com/.../reserva.git
    ```
 
 2. Rename the `.envexample` file to `.env` and fill in your MongoDB connection string and JWT secrets.
@@ -21,7 +23,7 @@ To run the application locally, follow these steps:
 3. Navigate to the project directory:
 
    ```bash
-   cd reserva
+        cd reserva
    ```
 
 4. Install dependencies for both the client and server:
