@@ -1,13 +1,16 @@
-const express = require('express')
-const dotenv = require('dotenv').config()
+const env = require('./config/env');
+const connectDB = require('./config/db');
+const app = require('./app');
 
-import logger from './middleware/logger.js';
-import errorHandler from './middleware/error.js';
-import notFound from './middleware/notFound.js';
+async function start() {
+	await connectDB();
 
-const port = process.env.PORT || 5000
+	app.listen(env.PORT, () => {
+		console.log(`Server started on port ${env.PORT}`);
+	});
+}
 
-const app = express()
-
-
-app.listen(port, () => console.log(`Server started on port ${port}`))
+start().catch((error) => {
+	console.error(error.message);
+	process.exit(1);
+});

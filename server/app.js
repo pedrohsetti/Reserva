@@ -1,25 +1,38 @@
-// load environment variables
-import dotenv from 'dotenv'
+const express = require('express');
 
-dotenv.config()
-const app = express()
+require('./config/env');
 
-// middleware
-app.use(express.json())
-app.use(express.urlencoded({ extended: false }))
+const logger = require('./middleware/logger');
+const errorHandler = require('./middleware/error');
+const notFound = require('./middleware/notFound');
 
-// logger middleware
-app.use(logger)
+const authRoutes = require('./routes/authRoutes');
+const businessRoutes = require('./routes/businessRoutes');
+const serviceRoutes = require('./routes/serviceRoutes');
+const staffRoutes = require('./routes/staffRoutes');
+const customerRoutes = require('./routes/customerRoutes');
+const appointmentRoutes = require('./routes/appointmentRoutes');
+const eventRoutes = require('./routes/eventRoutes');
 
-// routes
-app.use('/api/events', require('./routes/eventRoutes'))
-app.use('/api/appointments', require('./routes/appointmentRoutes'))
+const app = express();
 
-// Set static folder
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
+app.use(logger);
 
-// 404 error handler
+app.get('/health', (req, res) => {
+	res.json({ status: 'ok' });
+});
+
+app.use('/api/auth', authRoutes);
+app.use('/api/businesses', businessRoutes);
+app.use('/api/services', serviceRoutes);
+app.use('/api/staff', staffRoutes);
+app.use('/api/customers', customerRoutes);
+app.use('/api/appointments', appointmentRoutes);
+app.use('/api/events', eventRoutes);
+
 app.use(notFound);
-
-//error handler
 app.use(errorHandler);
+
+module.exports = app;

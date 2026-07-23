@@ -1,22 +1,22 @@
-// read and verify JWT token
+const jwt = require('jsonwebtoken');
+const env = require('../config/env');
 
 const protect = (req, res, next) => {
-  let token;
+  const authHeader = req.headers.authorization || '';
 
-  if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
-    try {
-      token = req.headers.authorization.split(' ')[1];
-      const decoded = jwt.verify(token, process.env.JWT_ACCESS_TOKEN_SECRET);
-      req.user = decoded;
-      next();
-    } catch (error) {
-      console.error(`Error: ${error.message}`);
-      res.status(401).json({ message: 'Not authorized, token failed' });
-    }
+  if (!authHeader.startsWith('Bearer ')) {
+    return res.status(401).json({ message: 'Not authorized, no token' });
   }
 
-  if (!token) {
-    res.status(401).json({ message: 'Not authorized, no token' });
+  const token = authHeader.split(' ')[1];
+
+  try {
+    const decoded = jwt.verify(token, env.JWT_ACCESS_SECRET);
+    req.user = decoded;
+    req.businessId = decoded.businessId || null;
+    return next();
+  } catch (error) {
+    return res.status(401).json({ message: 'Not authorized, token failed' });
   }
 };
 

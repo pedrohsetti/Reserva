@@ -8,6 +8,9 @@ This is the repo for the **Reserva** project, a full-stack web application built
 
 It's a full-stack web application built with the **MERN stack** that enables small businesses to manage appointments, events, staff, customers, and business operations from a single platform.
 
+## Demo
+
+
 ## Usage
 
 To run the application locally, follow these steps:
@@ -37,15 +40,13 @@ To run the application locally, follow these steps:
         npm run server
    ```
 
-## Demo
-
 
 ## Features
 
 ### Authentication
 
-- Secure user authentication
-- JWT access and refresh tokens
+- User authentication
+- JWT access token
 - Password hashing with bcrypt
 - Role-based authorization
 
@@ -119,10 +120,7 @@ Every customer has a dedicated profile including:
 - Contact information
 - Appointment history
 - Event attendance
-- Notes
-- Tags
 - Loyalty status
-- Spending history
 
 This allows businesses to build stronger relationships with returning customers.
 
@@ -148,11 +146,10 @@ The dashboard provides real-time insights such as:
 - Attendance rate
 - No-show rate
 - Staff utilization
-- Booking trends
 
 ## Notifications
 
-Automatic notifications are sent for:
+Notifications are logged for:
 
 - Booking confirmations
 - Appointment reminders
@@ -160,8 +157,9 @@ Automatic notifications are sent for:
 - Cancellations
 - Schedule changes
 
-Future support includes:
+### Future implementations:
 
+- Email notifications
 - Push notifications
 - SMS notifications
 
@@ -171,25 +169,25 @@ Every booking or event registration generates a QR code.
 
 Businesses can scan customer QR codes during check-in to instantly mark attendance.
 
-Benefits include:
-
-- Faster check-in
-- Reduced waiting time
+- Fast check-in
 - Attendance tracking
 - Event statistics
 
-## Payments *(Planned)*
-
-Support for online payments through:
-
-- Stripe
-- PayPal
+## Payments
 
 Businesses can choose between:
 
 - Pay online
 - Deposit only
 - Pay on arrival
+
+### Future implementations:
+
+Support for online payments through:
+
+- Stripe
+- PayPal
+- MobilePay
 
 ## AI Features *(Planned)*
 
@@ -233,8 +231,8 @@ Automatically suggest the best appointment times while minimizing schedule gaps.
 ### Frontend
 
 - React
-- Tailwind CSS
-- React Router
+- CSS
+- React Redux
 
 ### Backend
 
@@ -253,7 +251,6 @@ Automatically suggest the best appointment times while minimizing schedule gaps.
 - Docker
 - Docker Compose
 - GitHub Actions
-- Nginx
 
 ## Project Structure
 
@@ -277,10 +274,10 @@ reserva/
 │   ├── utils/
 │   └── config/
 │
-├── shared/
-│
-├── docs/
-│
+├── .env
+├── .gitignore
+├── package.json
+├── package-lock.json
 └── README.md
 ```
 
@@ -346,6 +343,7 @@ Check-in at event
 - Appointments
 - Calendar
 - Dashboard
+- Notifications
 
 ---
 
@@ -356,27 +354,19 @@ Check-in at event
 - Waiting lists
 - Email notifications
 - Analytics
+- Payments
 
 ---
 
 ### Version 3
 
-- Payments
 - AI assistant
 - Loyalty program
 - Public booking pages
 - Customer reviews
-
----
-
-### Version 4
-
-- Mobile application
 - Google Calendar integration
 - Outlook integration
 - WhatsApp notifications
-- API for third-party integrations
-- White-label support
 
 ## Project Goals
 
@@ -389,13 +379,7 @@ Reserva was built to demonstrate modern full-stack software engineering concepts
 - Real-time communication
 - Database modeling
 - Responsive UI/UX
-- Business analytics
 - Clean architecture
-- Scalable application design
-
-## License
-
-This project is licensed under the MIT License.
 
 ## Author
 
