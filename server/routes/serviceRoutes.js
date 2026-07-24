@@ -14,9 +14,9 @@ const router = express.Router();
 
 router.use(protect, blockTenantRequests, authorize('admin', 'owner', 'staff'));
 router.get('/', listServices);
-router.post('/', authorize('admin', 'owner'), createService);
+router.post('/', authorize('admin', 'owner', 'staff'), createService);
 router.get('/:id', getService);
-router.put('/:id', authorize('admin', 'owner'), updateService);
-router.delete('/:id', authorize('admin', 'owner'), deleteService);
+router.put('/:id', authorize('admin', 'owner', 'staff'), updateService);
+router.delete('/:id', authorize('admin', 'owner', 'staff'), deleteService);
 
 module.exports = router;

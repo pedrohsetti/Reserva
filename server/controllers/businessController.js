@@ -28,7 +28,8 @@ const getBusiness = asyncHandler(async (req, res) => {
 const createBusiness = asyncHandler(async (req, res) => {
 	const { name, email, phone, address, description } = req.body;
 	const business = await Business.create({ name, email, phone, address, description, ownerId: req.user.id });
-	await Member.create({ businessId: business._id, userId: req.user.id, role: 'owner' });
+	const owner = await User.findById(req.user.id).select('name email phone');
+	await Member.create({ businessId: business._id, userId: req.user.id, name: owner.name, email: owner.email, phone: owner.phone || '', role: 'owner' });
 	await User.findByIdAndUpdate(req.user.id, { businessId: business._id });
 	res.status(201).json({ business });
 });

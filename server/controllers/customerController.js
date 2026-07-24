@@ -1,5 +1,6 @@
 const asyncHandler = require('../utils/asyncHandler');
 const Customer = require('../models/Customer');
+const { syncContactUser } = require('../utils/contactUser');
 
 // @desc    Get all customers
 // @route   GET /api/customers
@@ -13,7 +14,15 @@ const listCustomers = asyncHandler(async (req, res) => {
 // @route   POST /api/customers
 // @access  Private/Admin/Owner/Staff
 const createCustomer = asyncHandler(async (req, res) => {
-	const customer = await Customer.create({ ...req.body, businessId: req.businessId || req.user.businessId });
+	const businessId = req.businessId || req.user.businessId;
+	const user = await syncContactUser({
+		name: req.body.name,
+		email: req.body.email,
+		phone: req.body.phone,
+		role: 'customer',
+		businessId,
+	});
+	const customer = await Customer.create({ ...req.body, businessId, userId: user._id, name: user.name, email: user.email, phone: user.phone || '' });
 	res.status(201).json({ customer });
 });
 

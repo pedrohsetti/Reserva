@@ -1,6 +1,8 @@
 const mongoose = require('mongoose')
 const asyncHandler = require('express-async-handler')
 const User = require('../models/User')
+const Staff = require('../models/Staff')
+const Customer = require('../models/Customer')
 const Business = require('../models/Business')
 const Member = require('../models/Member')
 const { isDevEmail, applyDevRole } = require('../utils/devRole')
@@ -8,6 +10,59 @@ const { isDevEmail, applyDevRole } = require('../utils/devRole')
 const allowedRoles = new Set(User.schema.path('role').enumValues)
 
 const hasOwn = (object, key) => Object.prototype.hasOwnProperty.call(object, key)
+
+const buildSharedProfileFields = (user) => {
+  const fields = {
+    name: user.name,
+    email: user.email,
+    phone: user.phone || '',
+  }
+
+  if (user.businessId) {
+    fields.businessId = user.businessId
+  }
+
+  return fields
+}
+
+const syncLinkedRecords = async (user) => {
+  const sharedFields = buildSharedProfileFields(user)
+
+  await Promise.all([
+    Staff.updateMany({ userId: user._id }, { $set: sharedFields }, { runValidators: true }),
+    Customer.updateMany({ userId: user._id }, { $set: sharedFields }, { runValidators: true }),
+  ])
+
+  if (!user.businessId || user.role === 'dev') {
+    await Member.deleteMany({ userId: user._id })
+    return
+  }
+
+  await Member.updateMany(
+    { userId: user._id },
+    {
+      $set: {
+        ...sharedFields,
+        businessId: user.businessId,
+        role: user.role,
+      },
+    },
+    { runValidators: true }
+  )
+
+  await Member.findOneAndUpdate(
+    { businessId: user.businessId, userId: user._id },
+    {
+      businessId: user.businessId,
+      userId: user._id,
+      name: user.name,
+      email: user.email,
+      phone: user.phone || '',
+      role: user.role,
+    },
+    { upsert: true, new: true, runValidators: true, setDefaultsOnInsert: true }
+  )
+}
 
 // @desc    Get all users
 // @route   GET /api/users
@@ -21,7 +76,16 @@ const getUsers = asyncHandler(async (req, res) => {
 // @route   GET /api/users/me
 // @access  Private
 const getMe = asyncHandler(async (req, res) => {
-  res.status(200).json(req.user)
+  const user = await User.findById(req.user.id).select('-password -refreshToken')
+
+  if (!user) {
+    return res.status(404).json({ message: 'User not found' })
+  }
+
+  res.status(200).json({
+    ...user.toObject(),
+    id: String(user._id),
+  })
 })
 
 // @desc    Update a user by ID
@@ -64,6 +128,10 @@ const updateUser = asyncHandler(async (req, res) => {
     updates.email = email
   }
 
+  if (hasOwn(req.body, 'phone')) {
+    updates.phone = String(req.body.phone || '').trim()
+  }
+
   if (hasOwn(req.body, 'role')) {
     const role = String(req.body.role || '').trim()
     if (!allowedRoles.has(role)) {
@@ -80,7 +148,6 @@ const updateUser = asyncHandler(async (req, res) => {
 
     if (rawBusinessId === null || rawBusinessId === '') {
       updates.businessId = null
-      membershipShouldSync = true
     } else {
       if (!mongoose.Types.ObjectId.isValid(rawBusinessId)) {
         return res.status(400).json({ message: 'Invalid business ID' })
@@ -100,36 +167,40 @@ const updateUser = asyncHandler(async (req, res) => {
     return res.status(400).json({ message: 'At least one editable field is required' })
   }
 
-  const previousBusinessId = user.businessId ? String(user.businessId) : null
-
   Object.assign(user, updates)
   applyDevRole(user)
   await user.save({ validateBeforeSave: true })
 
-  const nextBusinessId = user.businessId ? String(user.businessId) : null
-  const roleChanged = hasOwn(updates, 'role')
-  const businessChanged = previousBusinessId !== nextBusinessId
-
-  if (membershipShouldSync || roleChanged || businessChanged) {
-    if (!nextBusinessId || user.role === 'dev') {
-      await Member.deleteMany({ userId: user._id })
-    } else {
-      await Member.deleteMany({ userId: user._id, businessId: { $ne: user.businessId } })
-      await Member.findOneAndUpdate(
-        { businessId: user.businessId, userId: user._id },
-        { businessId: user.businessId, userId: user._id, role: user.role },
-        { upsert: true, new: true, runValidators: true, setDefaultsOnInsert: true }
-      )
-    }
-  }
+  await syncLinkedRecords(user)
 
   const updatedUser = await User.findById(user._id).select('-password -refreshToken')
 
   return res.json({ user: updatedUser })
 })
 
+// @desc Get a user by ID
+// @route GET /api/users/:id
+// @access Private/Admin/Owner
+
+const getUserById = asyncHandler(async (req, res) => {
+  const { id } = req.params
+
+  if (!mongoose.Types.ObjectId.isValid(id)) {
+    return res.status(400).json({ message: 'Invalid user ID' })
+  }
+
+  const user = await User.findById(id).select('-password -refreshToken')
+
+  if (!user) {
+    return res.status(404).json({ message: 'User not found' })
+  }
+
+  res.json({ user })
+})
+
 module.exports = {
   getUsers,
   getMe,
   updateUser,
+  getUserById,
 }

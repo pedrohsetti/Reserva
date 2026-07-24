@@ -17,6 +17,6 @@ router.get('/', authorize('admin', 'owner', 'staff', 'customer'), listAppointmen
 router.post('/', authorize('admin', 'owner', 'staff', 'customer'), createAppointment);
 router.get('/:id', authorize('admin', 'owner', 'staff', 'customer'), getAppointment);
 router.put('/:id', authorize('admin', 'owner', 'staff'), updateAppointment);
-router.delete('/:id', authorize('admin', 'owner'), deleteAppointment);
+router.delete('/:id', authorize('admin', 'owner', 'staff'), deleteAppointment);
 
 module.exports = router;

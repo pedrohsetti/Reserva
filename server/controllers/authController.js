@@ -28,7 +28,7 @@ const ensureBusinessContext = async (user) => {
 		await user.save({ validateBeforeSave: false });
 		await Member.findOneAndUpdate(
 			{ businessId: ownedBusiness._id, userId: user._id },
-			{ businessId: ownedBusiness._id, userId: user._id, role: 'owner' },
+			{ businessId: ownedBusiness._id, userId: user._id, name: user.name, email: user.email, phone: user.phone || '', role: 'owner' },
 			{ upsert: true, new: true, runValidators: true, setDefaultsOnInsert: true }
 		);
 	}
@@ -62,7 +62,7 @@ const register = asyncHandler(async (req, res) => {
 	}
 
 	if (businessId && user.businessId) {
-		await Member.create({ businessId: user.businessId, userId: user._id, role: user.role });
+		await Member.create({ businessId: user.businessId, userId: user._id, name: user.name, email: user.email, phone: user.phone || '', role: user.role });
 	}
 
 	const token = accessToken(user);
@@ -71,7 +71,7 @@ const register = asyncHandler(async (req, res) => {
 	await user.save({ validateBeforeSave: false });
 
 	res.status(201).json({
-		user: { id: user._id, name: user.name, email: user.email, role: user.role, businessId: user.businessId },
+		user: { id: user._id, name: user.name, email: user.email, phone: user.phone || '', role: user.role, businessId: user.businessId },
 		token,
 		refreshToken: refresh,
 	});
@@ -109,7 +109,7 @@ const login = asyncHandler(async (req, res) => {
 	await user.save({ validateBeforeSave: false });
 
 	res.json({
-		user: { id: user._id, name: user.name, email: user.email, role: user.role, businessId: user.businessId },
+		user: { id: user._id, name: user.name, email: user.email, phone: user.phone || '', role: user.role, businessId: user.businessId },
 		token,
 		refreshToken: refresh,
 	});

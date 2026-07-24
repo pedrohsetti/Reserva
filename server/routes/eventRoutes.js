@@ -14,9 +14,9 @@ const router = express.Router();
 
 router.use(protect, blockTenantRequests);
 router.get('/', authorize('admin', 'owner', 'staff', 'customer'), listEvents);
-router.post('/', authorize('admin', 'owner'), createEvent);
+router.post('/', authorize('admin', 'owner', 'staff'), createEvent);
 router.get('/:id', authorize('admin', 'owner', 'staff', 'customer'), getEvent);
-router.put('/:id', authorize('admin', 'owner'), updateEvent);
-router.delete('/:id', authorize('admin', 'owner'), deleteEvent);
+router.put('/:id', authorize('admin', 'owner', 'staff'), updateEvent);
+router.delete('/:id', authorize('admin', 'owner', 'staff'), deleteEvent);
 
 module.exports = router;

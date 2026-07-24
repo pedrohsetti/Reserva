@@ -9,7 +9,7 @@ const resolveBusinessIdForUser = async (userId) => {
     return null;
   }
 
-  const user = await User.findById(userId).select('businessId');
+  const user = await User.findById(userId).select('businessId name email phone');
   if (!user) {
     return null;
   }
@@ -31,7 +31,7 @@ const resolveBusinessIdForUser = async (userId) => {
     await user.save({ validateBeforeSave: false });
     await Member.findOneAndUpdate(
       { businessId: ownedBusiness._id, userId: user._id },
-      { businessId: ownedBusiness._id, userId: user._id, role: 'owner' },
+      { businessId: ownedBusiness._id, userId: user._id, name: user.name, email: user.email, phone: user.phone || '', role: 'owner' },
       { upsert: true, new: true, runValidators: true, setDefaultsOnInsert: true }
     );
     return String(ownedBusiness._id);

@@ -1,5 +1,6 @@
 const asyncHandler = require('../utils/asyncHandler');
 const Staff = require('../models/Staff');
+const { syncContactUser } = require('../utils/contactUser');
 
 // @desc    Get all staff
 // @route   GET /api/staff
@@ -13,7 +14,15 @@ const listStaff = asyncHandler(async (req, res) => {
 // @route   POST /api/staff
 // @access  Private/Admin/Owner
 const createStaff = asyncHandler(async (req, res) => {
-	const staff = await Staff.create({ ...req.body, businessId: req.businessId || req.user.businessId });
+	const businessId = req.businessId || req.user.businessId;
+	const user = await syncContactUser({
+		name: req.body.name,
+		email: req.body.email,
+		phone: req.body.phone,
+		role: 'staff',
+		businessId,
+	});
+	const staff = await Staff.create({ ...req.body, businessId, userId: user._id, name: user.name, email: user.email, phone: user.phone || '' });
 	res.status(201).json({ staff });
 });
 
