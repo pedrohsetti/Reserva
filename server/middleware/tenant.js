@@ -1,5 +1,5 @@
 const blockTenantRequests = (req, res, next) => {
-  const businessId = req.user?.businessId || req.headers['x-business-id'] || req.params.businessId || req.body?.businessId;
+  const businessId = req.businessId || req.user?.businessId || req.headers['x-business-id'] || req.params.businessId || req.body?.businessId;
 
   if (!businessId) {
     return res.status(400).json({ message: 'Business context required' });

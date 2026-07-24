@@ -26,8 +26,9 @@ const env = {
   PORT: parsePort(process.env.PORT || 5000),
   NODE_ENV: process.env.NODE_ENV || 'development',
   MONGODB_URI: required('MONGODB_URI'),
-  JWT_ACCESS_SECRET: required('JWT_ACCESS_SECRET'),
-  JWT_REFRESH_SECRET: required('JWT_REFRESH_SECRET'),
+  JWT_ACCESS_TOKEN: required('JWT_ACCESS_TOKEN'),
+  JWT_REFRESH_TOKEN: required('JWT_REFRESH_TOKEN'),
+  DEV_USERS_EMAIL: required('DEV_USERS_EMAIL'),
   FRONTEND_ORIGIN: process.env.FRONTEND_ORIGIN || process.env.ALLOWED_ORIGIN || 'http://localhost:3000',
 };
 

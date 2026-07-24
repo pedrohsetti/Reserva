@@ -333,7 +333,7 @@ Check-in at event
 
 ## Roadmap
 
-### Version 1 (MVP)
+### Version 1 (delivered)
 
 - Authentication
 - Businesses
@@ -343,16 +343,16 @@ Check-in at event
 - Appointments
 - Calendar
 - Dashboard
-- Notifications
 
 ---
 
 ### Version 2
 
-- Event management
+- Password reset
+- Recurring events
 - QR check-in
 - Waiting lists
-- Email notifications
+- Notifications
 - Analytics
 - Payments
 
@@ -366,6 +366,7 @@ Check-in at event
 - Customer reviews
 - Google Calendar integration
 - Outlook integration
+- Email notifications
 - WhatsApp notifications
 
 ## Project Goals
@@ -383,4 +384,4 @@ Reserva was built to demonstrate modern full-stack software engineering concepts
 
 ## Author
 
-Developed by **Pedro Henrique Setti** as a portfolio project demonstrating full-stack web development with the MERN stack.
+Developed by **Pedro Henrique Setti** as a course project demonstrating full-stack web development with the MERN stack.

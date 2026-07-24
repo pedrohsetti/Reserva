@@ -6,8 +6,8 @@ const customerSchema = new mongoose.Schema(
 		userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', default: null },
 		name: { type: String, required: true, trim: true },
 		email: { type: String, trim: true, lowercase: true, default: '' },
-		phone: { type: String, trim: true, default: '' },
-		notes: { type: String, trim: true, default: '' },
+		phone: { type: String, trim: false, default: '' },
+		notes: { type: String, trim: false, default: '' },
 		status: {
 			type: String,
 			enum: ['active', 'inactive'],

@@ -11,10 +11,10 @@ const {
 
 const router = express.Router();
 
-router.get('/', protect, authorize('admin', 'owner'), listBusinesses);
-router.post('/', protect, authorize('admin', 'owner'), createBusiness);
-router.get('/:id', protect, authorize('admin', 'owner'), getBusiness);
-router.put('/:id', protect, authorize('admin', 'owner'), updateBusiness);
-router.delete('/:id', protect, authorize('admin'), deleteBusiness);
+router.get('/', protect, authorize('dev'), listBusinesses);
+router.post('/', protect, authorize('dev', 'admin', 'owner'), createBusiness);
+router.get('/:id', protect, authorize('dev', 'admin', 'owner'), getBusiness);
+router.put('/:id', protect, authorize('dev', 'admin', 'owner'), updateBusiness);
+router.delete('/:id', protect, authorize('dev', 'admin', 'owner'), deleteBusiness);
 
 module.exports = router;

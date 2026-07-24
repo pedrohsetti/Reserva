@@ -7,7 +7,7 @@ const userSchema = new mongoose.Schema(
 		password: { type: String, required: true, select: false },
 		role: {
 			type: String,
-			enum: ['admin', 'owner', 'staff', 'customer'],
+			enum: ['dev', 'admin', 'owner', 'staff', 'customer'],
 			default: 'customer',
 		},
 		status: {
@@ -20,7 +20,4 @@ const userSchema = new mongoose.Schema(
 	},
 	{ timestamps: true }
 );
-
-userSchema.index({ email: 1 }, { unique: true });
-
 module.exports = mongoose.model('User', userSchema);

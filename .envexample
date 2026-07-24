@@ -1,4 +1,6 @@
-NODE_ENV = development
-PORT = 8000
-MONGO_URI = mongodb+srv://<username>:<password>@cluster0.mongodb.net/<dbname>?retryWrites=true&w=majority
-JWT_ACCESS_TOKEN_SECRET = your_jwt_access_token_secret
+NODE_ENV=development
+PORT=8000
+MONGODB_URI=mongodb+srv://<username>:<password>@<cluster-host>/<dbname>?retryWrites=true&w=majority
+JWT_ACCESS_TOKEN_SECRET=your_jwt_access_token_secret
+JWT_REFRESH_TOKEN=your_jwt_refresh_token_secret
+DEV_USERS_EMAIL=dev@email.com

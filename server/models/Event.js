@@ -6,16 +6,17 @@ const eventSchema = new mongoose.Schema(
 		title: { type: String, required: true, trim: true },
 		description: { type: String, trim: true, default: '' },
 		location: { type: String, trim: true, default: '' },
-		startAt: { type: Date, required: true },
-		endAt: { type: Date, required: true },
+		date: { type: Date, required: true },
+    	time: { type: Number, required: true },
+    	tags: { type: String, required: false },
 		capacity: { type: Number, required: true, min: 1 },
 		status: {
 			type: String,
-			enum: ['draft', 'published', 'full', 'cancelled'],
+			enum: ['draft', 'open', 'full', 'cancelled'],
 			default: 'draft',
 		},
 		allowWaitlist: { type: Boolean, default: false },
-		checkInEnabled: { type: Boolean, default: true },
+		checkInEnabled: { type: Boolean, default: false },
 	},
 	{ timestamps: true }
 );

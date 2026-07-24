@@ -3,17 +3,26 @@ const Event = require('../models/Event');
 const { ensureEventCapacity } = require('../services/eventService');
 const { sendEventConfirmation } = require('../services/notificationService');
 
+// @desc    Get all events
+// @route   GET /api/events
+// @access  Private/Admin/Owner/Staff/Customer
 const listEvents = asyncHandler(async (req, res) => {
 	const events = await Event.find({ businessId: req.businessId || req.user.businessId });
 	res.json({ events });
 });
 
+// @desc    Create an event
+// @route   POST /api/events
+// @access  Private/Admin/Owner
 const createEvent = asyncHandler(async (req, res) => {
 	const businessId = req.businessId || req.user.businessId;
 	const event = await Event.create({ ...req.body, businessId });
 	res.status(201).json({ event });
 });
 
+// @desc    Get a single event
+// @route   GET /api/events/:id
+// @access  Private/Admin/Owner/Staff/Customer
 const getEvent = asyncHandler(async (req, res) => {
 	const event = await Event.findOne({ _id: req.params.id, businessId: req.businessId || req.user.businessId });
 	if (!event) {
@@ -22,6 +31,9 @@ const getEvent = asyncHandler(async (req, res) => {
 	res.json({ event });
 });
 
+// @desc    Update an event
+// @route   PUT /api/events/:id
+// @access  Private/Admin/Owner
 const updateEvent = asyncHandler(async (req, res) => {
 	const businessId = req.businessId || req.user.businessId;
 	if (typeof req.body.capacity === 'number') {
@@ -35,6 +47,9 @@ const updateEvent = asyncHandler(async (req, res) => {
 	res.json({ event });
 });
 
+// @desc    Delete an event
+// @route   DELETE /api/events/:id
+// @access  Private/Admin/Owner
 const deleteEvent = asyncHandler(async (req, res) => {
 	const event = await Event.findOneAndDelete({ _id: req.params.id, businessId: req.businessId || req.user.businessId });
 	if (!event) {

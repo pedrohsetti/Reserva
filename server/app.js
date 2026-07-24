@@ -8,6 +8,7 @@ const notFound = require('./middleware/notFound');
 
 const authRoutes = require('./routes/authRoutes');
 const businessRoutes = require('./routes/businessRoutes');
+const userRoutes = require('./routes/userRoutes');
 const serviceRoutes = require('./routes/serviceRoutes');
 const staffRoutes = require('./routes/staffRoutes');
 const customerRoutes = require('./routes/customerRoutes');
@@ -26,6 +27,7 @@ app.get('/health', (req, res) => {
 
 app.use('/api/auth', authRoutes);
 app.use('/api/businesses', businessRoutes);
+app.use('/api/users', userRoutes);
 app.use('/api/services', serviceRoutes);
 app.use('/api/staff', staffRoutes);
 app.use('/api/customers', customerRoutes);
