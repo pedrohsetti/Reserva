@@ -12,11 +12,11 @@ const {
 
 const router = express.Router();
 
-router.use(protect, blockTenantRequests, authorize('admin', 'owner', 'staff'));
+router.use(protect, blockTenantRequests, authorize('dev', 'admin', 'owner', 'staff'));
 router.get('/', listServices);
-router.post('/', authorize('admin', 'owner', 'staff'), createService);
+router.post('/', authorize('dev', 'admin', 'owner', 'staff'), createService);
 router.get('/:id', getService);
-router.put('/:id', authorize('admin', 'owner', 'staff'), updateService);
-router.delete('/:id', authorize('admin', 'owner', 'staff'), deleteService);
+router.put('/:id', authorize('dev', 'admin', 'owner', 'staff'), updateService);
+router.delete('/:id', authorize('dev', 'admin', 'owner', 'staff'), deleteService);
 
 module.exports = router;

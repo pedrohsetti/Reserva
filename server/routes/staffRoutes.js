@@ -12,7 +12,7 @@ const {
 
 const router = express.Router();
 
-router.use(protect, blockTenantRequests, authorize('admin', 'owner'));
+router.use(protect, blockTenantRequests, authorize('dev', 'admin', 'owner'));
 router.get('/', listStaff);
 router.post('/', createStaff);
 router.get('/:id', getStaff);

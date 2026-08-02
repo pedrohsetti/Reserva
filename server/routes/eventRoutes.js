@@ -13,10 +13,10 @@ const {
 const router = express.Router();
 
 router.use(protect, blockTenantRequests);
-router.get('/', authorize('admin', 'owner', 'staff', 'customer'), listEvents);
-router.post('/', authorize('admin', 'owner', 'staff'), createEvent);
-router.get('/:id', authorize('admin', 'owner', 'staff', 'customer'), getEvent);
-router.put('/:id', authorize('admin', 'owner', 'staff'), updateEvent);
-router.delete('/:id', authorize('admin', 'owner', 'staff'), deleteEvent);
+router.get('/', authorize('dev', 'admin', 'owner', 'staff', 'customer'), listEvents);
+router.post('/', authorize('dev', 'admin', 'owner', 'staff'), createEvent);
+router.get('/:id', authorize('dev', 'admin', 'owner', 'staff', 'customer'), getEvent);
+router.put('/:id', authorize('dev', 'admin', 'owner', 'staff'), updateEvent);
+router.delete('/:id', authorize('dev', 'admin', 'owner', 'staff'), deleteEvent);
 
 module.exports = router;

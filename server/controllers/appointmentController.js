@@ -17,7 +17,10 @@ const listAppointments = asyncHandler(async (req, res) => {
 const createAppointment = asyncHandler(async (req, res) => {
 	const businessId = req.businessId || req.user.businessId;
 	const { service, staff, startAt, endAt } = await ensureAppointmentSlot({ businessId, ...req.body });
-	const appointment = await Appointment.create({ ...req.body, businessId, startAt, endAt });
+	// derive legacy `date` and `time` fields expected by the model
+	const startDate = new Date(startAt);
+	const timeStr = `${String(startDate.getUTCHours()).padStart(2, '0')}:${String(startDate.getUTCMinutes()).padStart(2, '0')}`;
+	const appointment = await Appointment.create({ ...req.body, businessId, startAt, endAt, date: startDate, time: timeStr });
 
 	await sendAppointmentConfirmation({
 		businessId,

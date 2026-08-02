@@ -3,6 +3,7 @@ const mongoose = require('mongoose');
 const businessSchema = new mongoose.Schema(
 	{
 		name: { type: String, required: true, trim: true },
+		slug: { type: String, trim: true, lowercase: true, default: null },
 		ownerId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
 		status: {
 			type: String,

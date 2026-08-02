@@ -6,6 +6,8 @@ const appointmentSchema = new mongoose.Schema(
 		customerId: { type: mongoose.Schema.Types.ObjectId, ref: 'Customer', required: true },
 		serviceId: { type: mongoose.Schema.Types.ObjectId, ref: 'Service', required: true },
 		staffId: { type: mongoose.Schema.Types.ObjectId, ref: 'Staff', required: true },
+		startAt: { type: Date, required: true },
+		endAt: { type: Date, required: true },
 		date: { type: Date, required: true },
 		time: { type: String, required: true },
 		status: {

@@ -12,11 +12,11 @@ const {
 
 const router = express.Router();
 
-router.use(protect, blockTenantRequests, authorize('admin', 'owner', 'staff'));
+router.use(protect, blockTenantRequests, authorize('dev', 'admin', 'owner', 'staff'));
 router.get('/', listCustomers);
 router.post('/', createCustomer);
 router.get('/:id', getCustomer);
 router.put('/:id', updateCustomer);
-router.delete('/:id', authorize('admin', 'owner'), deleteCustomer);
+router.delete('/:id', authorize('dev', 'admin', 'owner'), deleteCustomer);
 
 module.exports = router;

@@ -1,0 +1,95 @@
+/* Minimal but slightly more expressive global styles for the frontend */
+
+:root {
+	color-scheme: light;
+	--bg: #f4efe8;
+	--bg-soft: rgba(255, 255, 255, 0.78);
+	--text: #16202a;
+	--muted: #5f6b78;
+	--border: rgba(22, 32, 42, 0.12);
+	--accent: #1f5eff;
+	--accent-strong: #1848c7;
+	--shadow: 0 20px 45px rgba(18, 24, 31, 0.08);
+}
+
+* { box-sizing: border-box; }
+body {
+	font-family: Arial, Helvetica, sans-serif;
+	margin: 0;
+	color: var(--text);
+	background:
+		radial-gradient(circle at top left, rgba(31, 94, 255, 0.12), transparent 30%),
+		radial-gradient(circle at bottom right, rgba(24, 72, 199, 0.08), transparent 28%),
+		var(--bg);
+}
+
+a { color: inherit; }
+
+.app-container { max-width: 1120px; margin: 0 auto; padding: 18px; }
+.app-header {
+	display:flex; justify-content:space-between; align-items:center; gap:16px;
+	padding: 14px 18px; margin-bottom: 18px;
+	background: var(--bg-soft); backdrop-filter: blur(12px);
+	border: 1px solid var(--border); border-radius: 18px; box-shadow: var(--shadow);
+}
+.brand-link { text-decoration:none; }
+.brand-link h1 { margin: 0; font-size: 20px; letter-spacing: -0.02em; }
+.brand-link span { color: var(--muted); font-weight: 400; }
+.header-nav { display:flex; align-items:center; gap: 8px; flex-wrap: wrap; }
+.nav-link {
+	text-decoration:none; color: var(--muted);
+	padding: 8px 12px; border-radius: 999px; border: 1px solid transparent;
+	transition: all 0.15s ease;
+}
+.nav-link:hover { color: var(--text); background: rgba(31, 94, 255, 0.08); }
+.nav-link.active { color: var(--accent-strong); background: rgba(31, 94, 255, 0.12); border-color: rgba(31, 94, 255, 0.18); }
+.user-chip {
+	padding: 8px 12px; border-radius: 999px; background: rgba(22, 32, 42, 0.06);
+	color: var(--muted); font-size: 13px;
+}
+.header-nav .btn.small { margin-left: 4px; }
+.content { min-height: 360px; }
+.card {
+	background: var(--bg-soft); padding: 18px; margin: 12px 0; border-radius: 18px;
+	border: 1px solid var(--border); box-shadow: var(--shadow);
+}
+.dashboard-card { overflow: hidden; }
+.dashboard-header { display:flex; align-items:flex-start; justify-content:space-between; gap: 16px; margin-bottom: 16px; }
+.eyebrow { margin: 0 0 4px; color: var(--accent-strong); text-transform: uppercase; font-size: 12px; letter-spacing: 0.12em; }
+.quick-grid { display:grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; }
+.quick-card {
+	display:flex; flex-direction:column; gap: 8px; text-decoration:none;
+	padding: 14px; border-radius: 14px; border: 1px solid var(--border);
+	background: rgba(255,255,255,0.65); transition: transform 0.15s ease, border-color 0.15s ease;
+}
+.quick-card:hover { transform: translateY(-2px); border-color: rgba(31, 94, 255, 0.24); }
+.quick-card strong { font-size: 15px; }
+.quick-card span { color: var(--muted); font-size: 13px; line-height: 1.4; }
+.form { margin-top: 8px }
+.simple-form { margin-top: 8px }
+.form-control { margin-bottom: 10px }
+.form-control label { display:block; font-size:13px; margin-bottom:4px; color: var(--muted) }
+.form-control input, .form-control textarea, .form-control select {
+	width:100%; padding:10px 12px; border-radius: 10px; border:1px solid var(--border);
+	background: #fff; color: var(--text);
+}
+.form-control textarea { min-height: 84px; resize: vertical; }
+.form-control input:focus, .form-control textarea:focus, .form-control select:focus {
+	outline: none; border-color: rgba(31, 94, 255, 0.45); box-shadow: 0 0 0 3px rgba(31, 94, 255, 0.12);
+}
+.btn {
+	background: linear-gradient(180deg, var(--accent), var(--accent-strong)); color:#fff; border:none;
+	padding:10px 14px; border-radius:999px; cursor:pointer; font-weight: 600;
+	transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+.btn:hover { transform: translateY(-1px); box-shadow: 0 10px 20px rgba(31, 94, 255, 0.18); }
+.btn.small { padding: 7px 11px; font-size: 13px }
+.error { color: #b00020; margin: 6px 0; font-size: 13px }
+.app-footer { text-align:center; color: var(--muted); font-size:13px; padding:16px 0 }
+
+@media (max-width: 780px) {
+	.app-header, .dashboard-header { flex-direction: column; align-items: flex-start; }
+	.header-nav { width: 100%; }
+	.nav-link, .user-chip, .header-nav .btn.small { width: 100%; text-align: center; }
+}
+

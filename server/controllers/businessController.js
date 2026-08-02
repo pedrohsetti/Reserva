@@ -25,9 +25,25 @@ const getBusiness = asyncHandler(async (req, res) => {
 // @desc    Create a business
 // @route   POST /api/businesses
 // @access  Private/Admin/Owner
+const slugify = require('../utils/slugify');
+
 const createBusiness = asyncHandler(async (req, res) => {
 	const { name, email, phone, address, description } = req.body;
-	const business = await Business.create({ name, email, phone, address, description, ownerId: req.user.id });
+
+	if (!name || !name.trim()) {
+		return res.status(400).json({ message: 'Business name is required' });
+	}
+
+	// generate base slug and ensure uniqueness
+	const baseSlug = slugify(name) || 'biz';
+	let attempt = baseSlug;
+	let counter = 0;
+	while (await Business.findOne({ slug: attempt })) {
+		counter += 1;
+		attempt = `${baseSlug}-${counter}`;
+	}
+
+	const business = await Business.create({ name, slug: attempt, email, phone, address, description, ownerId: req.user.id });
 	const owner = await User.findById(req.user.id).select('name email phone');
 	await Member.create({ businessId: business._id, userId: req.user.id, name: owner.name, email: owner.email, phone: owner.phone || '', role: 'owner' });
 	await User.findByIdAndUpdate(req.user.id, { businessId: business._id });
