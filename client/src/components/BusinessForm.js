@@ -31,8 +31,7 @@ const BusinessForm = ({ token, onCreated }) => {
       setPhone('');
       setAddress('');
       setDescription('');
-      // API returns { business: { ... } }
-      if (onCreated) onCreated(data.business || data);
+      if (onCreated) onCreated(data);
     } catch (err) {
       setError(err.message);
     }

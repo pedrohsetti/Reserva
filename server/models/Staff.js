@@ -27,6 +27,21 @@ const staffSchema = new mongoose.Schema(
 			saturday: { start: String, end: String },
 			sunday: { start: String, end: String },
 		},
+		daysOff: [{ type: Date }], // Specific dates staff member is unavailable
+		serviceAvailability: [
+			{
+				serviceId: { type: mongoose.Schema.Types.ObjectId, ref: 'Service' },
+				workingHours: {
+					monday: { start: String, end: String },
+					tuesday: { start: String, end: String },
+					wednesday: { start: String, end: String },
+					thursday: { start: String, end: String },
+					friday: { start: String, end: String },
+					saturday: { start: String, end: String },
+					sunday: { start: String, end: String },
+				},
+			},
+		],
 	},
 	{ timestamps: true }
 );

@@ -1,41 +1,47 @@
-import { Link } from 'react-router-dom';
+import DashboardDev from './DashboardDev';
+import DashboardAdmin from './DashboardAdmin';
+import DashboardOwner from './DashboardOwner';
+import DashboardStaff from './DashboardStaff';
+import DashboardCustomer from './DashboardCustomer';
+import DashboardOnboarding from './DashboardOnboarding';
 
-const Dashboard = ({ user }) => {
-  return (
-    <div className="card dashboard-card">
-      <div className="dashboard-header">
-        <div>
-          <p className="eyebrow">Workspace</p>
-          <h2>Dashboard</h2>
-          <p>Welcome {user?.name || 'user'} — a compact control room for the app.</p>
-        </div>
-        <Link to="/businesses" className="btn small">Go to businesses</Link>
-      </div>
+/**
+ * Dashboard - Main component that renders role-specific dashboard variants
+ * Routes to the appropriate dashboard based on user.role:
+ * - 'dev' -> DashboardDev (system overview)
+ * - 'admin' -> DashboardAdmin (business metrics)
+ * - 'owner' -> DashboardOwner (business KPIs)
+ * - 'staff' -> DashboardStaff (my schedule)
+ * - 'customer' -> DashboardCustomer (my bookings)
+ */
+const Dashboard = ({ user, token }) => {
+	if (!user) {
+		return <div className="card dashboard-card">Loading...</div>;
+	}
 
-      <div className="quick-grid">
-        <Link to="/businesses" className="quick-card">
-          <strong>Businesses</strong>
-          <span>Create and review business records.</span>
-        </Link>
-        <Link to="/services" className="quick-card">
-          <strong>Services</strong>
-          <span>Manage services in the active business.</span>
-        </Link>
-        <Link to="/staff" className="quick-card">
-          <strong>Staff</strong>
-          <span>Check team members and create new ones.</span>
-        </Link>
-        <Link to="/customers" className="quick-card">
-          <strong>Customers</strong>
-          <span>Review customer entries and contacts.</span>
-        </Link>
-        <Link to="/appointments" className="quick-card">
-          <strong>Appointments</strong>
-          <span>Book and inspect appointment flow.</span>
-        </Link>
-      </div>
-    </div>
-  );
+	if (user.role !== 'dev' && !user.businessId) {
+		return <DashboardOnboarding user={user} token={token} />;
+	}
+
+	switch (user.role) {
+		case 'dev':
+			return <DashboardDev user={user} token={token} />;
+		case 'admin':
+			return <DashboardAdmin user={user} token={token} />;
+		case 'owner':
+			return <DashboardOwner user={user} token={token} />;
+		case 'staff':
+			return <DashboardStaff user={user} token={token} />;
+		case 'customer':
+			return <DashboardCustomer user={user} token={token} />;
+		default:
+			return (
+				<div className="card dashboard-card">
+					<h2>Welcome {user.name}</h2>
+					<p>Dashboard is loading...</p>
+				</div>
+			);
+	}
 };
 
 export default Dashboard;

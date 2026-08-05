@@ -1,5 +1,6 @@
 const mongoose = require('mongoose')
 const asyncHandler = require('express-async-handler')
+const bcrypt = require('bcryptjs')
 const User = require('../models/User')
 const Staff = require('../models/Staff')
 const Customer = require('../models/Customer')
@@ -93,6 +94,18 @@ const getMe = asyncHandler(async (req, res) => {
 // @access  Private/Admin/Owner
 const updateUser = asyncHandler(async (req, res) => {
   const { id } = req.params
+  const canEditAnyUser = ['dev', 'admin', 'owner'].includes(req.user.role)
+
+  if (!canEditAnyUser && String(req.user.id) !== String(id)) {
+    return res.status(403).json({ message: 'Not authorized to update this user' })
+  }
+
+  if (!canEditAnyUser) {
+    const attemptedRestrictedUpdate = ['role', 'businessId', 'email'].some((field) => hasOwn(req.body, field))
+    if (attemptedRestrictedUpdate) {
+      return res.status(403).json({ message: 'Not authorized to update restricted profile fields' })
+    }
+  }
 
   if (!mongoose.Types.ObjectId.isValid(id)) {
     return res.status(400).json({ message: 'Invalid user ID' })
@@ -198,9 +211,154 @@ const getUserById = asyncHandler(async (req, res) => {
   res.json({ user })
 })
 
+// @desc    Change user password
+// @route   PATCH /api/users/:id/password
+// @access  Private/Self-only
+const changePassword = asyncHandler(async (req, res) => {
+  const { id } = req.params
+  const { currentPassword, newPassword, confirmPassword } = req.body
+
+  // Validate that user can only change their own password
+  if (String(req.user.id) !== String(id) && req.user.role !== 'dev') {
+    return res.status(403).json({ message: 'Not authorized to change this password' })
+  }
+
+  if (!mongoose.Types.ObjectId.isValid(id)) {
+    return res.status(400).json({ message: 'Invalid user ID' })
+  }
+
+  // Validate required fields
+  if (!currentPassword || !newPassword || !confirmPassword) {
+    return res.status(400).json({ message: 'Current password, new password, and confirmation are required' })
+  }
+
+  // Validate passwords match
+  if (newPassword !== confirmPassword) {
+    return res.status(400).json({ message: 'New passwords do not match' })
+  }
+
+  // Validate new password is different from current
+  if (currentPassword === newPassword) {
+    return res.status(400).json({ message: 'New password must be different from current password' })
+  }
+
+  // Validate password strength (at least 8 characters)
+  if (newPassword.length < 8) {
+    return res.status(400).json({ message: 'Password must be at least 8 characters long' })
+  }
+
+  // Get user with password field
+  const user = await User.findById(id).select('+password')
+  if (!user) {
+    return res.status(404).json({ message: 'User not found' })
+  }
+
+  // Verify current password
+  const passwordMatches = await bcrypt.compare(currentPassword, user.password)
+  if (!passwordMatches) {
+    return res.status(401).json({ message: 'Current password is incorrect' })
+  }
+
+  // Hash and update new password
+  const hashedPassword = await bcrypt.hash(newPassword, 10)
+  user.password = hashedPassword
+  await user.save({ validateBeforeSave: false })
+
+  res.json({ message: 'Password changed successfully' })
+})
+
+// @desc    Delete user account
+// @route   DELETE /api/users/:id
+// @access  Private/Self-only or Dev/Admin
+const deleteAccount = asyncHandler(async (req, res) => {
+  const { id } = req.params
+  const { password } = req.body
+
+  // Validate that user can only delete their own account or dev/admin
+  if (String(req.user.id) !== String(id) && req.user.role !== 'dev' && req.user.role !== 'admin') {
+    return res.status(403).json({ message: 'Not authorized to delete this account' })
+  }
+
+  if (!mongoose.Types.ObjectId.isValid(id)) {
+    return res.status(400).json({ message: 'Invalid user ID' })
+  }
+
+  // Validate password confirmation
+  if (!password) {
+    return res.status(400).json({ message: 'Password confirmation is required' })
+  }
+
+  // Get user with password field
+  const user = await User.findById(id).select('+password')
+  if (!user) {
+    return res.status(404).json({ message: 'User not found' })
+  }
+
+  // Verify password
+  const passwordMatches = await bcrypt.compare(password, user.password)
+  if (!passwordMatches) {
+    return res.status(401).json({ message: 'Password is incorrect' })
+  }
+
+  // Mark user as deleted instead of hard delete to preserve referential integrity
+  user.status = 'deleted'
+  await user.save({ validateBeforeSave: false })
+
+  // Soft-delete related records
+  await Staff.deleteMany({ userId: user._id })
+  await Customer.deleteMany({ userId: user._id })
+  await Member.deleteMany({ userId: user._id })
+
+  res.json({ message: 'Account deleted successfully' })
+})
+
+// @desc    Get user permissions and role info
+// @route   GET /api/users/:id/permissions
+// @access  Private/Self-only or Dev/Admin
+const getPermissions = asyncHandler(async (req, res) => {
+  const { id } = req.params
+
+  // Validate that user can only view their own permissions or dev/admin
+  if (String(req.user.id) !== String(id) && req.user.role !== 'dev' && req.user.role !== 'admin') {
+    return res.status(403).json({ message: 'Not authorized to view these permissions' })
+  }
+
+  if (!mongoose.Types.ObjectId.isValid(id)) {
+    return res.status(400).json({ message: 'Invalid user ID' })
+  }
+
+  const user = await User.findById(id).select('-password -refreshToken')
+  if (!user) {
+    return res.status(404).json({ message: 'User not found' })
+  }
+
+  // Define role-based permissions
+  const rolePermissions = {
+    dev: ['view_all_users', 'manage_all_users', 'manage_businesses', 'manage_roles', 'system_settings'],
+    admin: ['manage_users', 'manage_businesses', 'manage_staff', 'manage_customers', 'view_reports'],
+    owner: ['manage_business', 'manage_staff', 'manage_customers', 'manage_services', 'manage_appointments', 'view_reports'],
+    staff: ['manage_appointments', 'view_customers', 'manage_services'],
+    customer: ['view_appointments', 'manage_profile', 'book_services'],
+  }
+
+  const permissions = rolePermissions[user.role] || []
+
+  res.json({
+    role: user.role,
+    permissions,
+    status: user.status,
+    businessId: user.businessId || null,
+    email: user.email,
+    name: user.name,
+  })
+})
+
 module.exports = {
   getUsers,
   getMe,
   updateUser,
   getUserById,
+  changePassword,
+  deleteAccount,
+  getPermissions,
 }

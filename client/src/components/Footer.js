@@ -1,7 +1,7 @@
 const Footer = () => {
   return (
     <footer className="app-footer">
-      <p>Reserva — Minimal frontend for testing backend APIs</p>
+      <p>Reserva — Schedule and manage events and appointments</p>
     </footer>
   );
 };

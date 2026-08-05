@@ -17,18 +17,42 @@ function timeToMinutes(time) {
 	return (hours || 0) * 60 + (minutes || 0);
 }
 
-function isWithinWorkingHours(staff, startAt, endAt) {
+function dateKeyLocal(date) {
+	const year = date.getFullYear();
+	const month = String(date.getMonth() + 1).padStart(2, '0');
+	const day = String(date.getDate()).padStart(2, '0');
+	return `${year}-${month}-${day}`;
+}
+
+function isDayOff(staff, startAt) {
+	const startDay = dateKeyLocal(startAt);
+	return (staff.daysOff || []).some((dayOff) => dateKeyLocal(new Date(dayOff)) === startDay);
+}
+
+function getWorkingWindow(staff, serviceId, startAt) {
 	const schedule = staff.workingHours || {};
 	const dayNames = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
-	const day = dayNames[startAt.getUTCDay()];
-	const window = schedule[day];
+	const day = dayNames[startAt.getDay()];
+	const override = (staff.serviceAvailability || []).find(
+		(entry) => String(entry.serviceId) === String(serviceId)
+	);
 
-	if (!window || !window.start || !window.end) {
-		return true;
+	return override?.workingHours?.[day] || schedule[day] || null;
+}
+
+function isWithinWorkingHours(staff, serviceId, startAt, endAt) {
+	if (staff.status !== 'active' || isDayOff(staff, startAt)) {
+		return false;
 	}
 
-	const startMinutes = startAt.getUTCHours() * 60 + startAt.getUTCMinutes();
-	const endMinutes = endAt.getUTCHours() * 60 + endAt.getUTCMinutes();
+	const window = getWorkingWindow(staff, serviceId, startAt);
+
+	if (!window || !window.start || !window.end) {
+		return false;
+	}
+
+	const startMinutes = startAt.getHours() * 60 + startAt.getMinutes();
+	const endMinutes = endAt.getHours() * 60 + endAt.getMinutes();
 	const openMinutes = timeToMinutes(window.start);
 	const closeMinutes = timeToMinutes(window.end);
 
@@ -49,6 +73,10 @@ async function ensureAppointmentSlot({ businessId, staffId, serviceId, startAt, 
 		throw Object.assign(new Error('Staff not found'), { status: 404 });
 	}
 
+	if (!service.staffIds?.some((assignedStaffId) => String(assignedStaffId) === String(staff._id))) {
+		throw Object.assign(new Error('Selected staff member is not assigned to this service'), { status: 400 });
+	}
+
 	const startDate = toDate(startAt);
 	const endDate = toDate(endAt);
 
@@ -62,14 +90,14 @@ async function ensureAppointmentSlot({ businessId, staffId, serviceId, startAt, 
 		throw Object.assign(new Error('Appointment duration is shorter than the selected service'), { status: 400 });
 	}
 
-	if (!isWithinWorkingHours(staff, startDate, endDate)) {
+	if (!isWithinWorkingHours(staff, service._id, startDate, endDate)) {
 		throw Object.assign(new Error('Appointment is outside staff working hours'), { status: 400 });
 	}
 
 	const overlapQuery = {
 		businessId,
 		staffId,
-		status: { $nin: ['cancelled'] },
+		status: { $in: ['booked', 'confirmed'] },
 		startAt: { $lt: endDate },
 		endAt: { $gt: startDate },
 	};

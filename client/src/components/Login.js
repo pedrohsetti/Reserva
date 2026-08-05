@@ -1,6 +1,6 @@
 import { useState, useContext } from 'react';
 import { login as apiLogin } from '../utils/api';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import AuthContext from '../context/AuthContext';
 
 const Login = ({ onLogin }) => {
@@ -26,10 +26,11 @@ const Login = ({ onLogin }) => {
   return (
     <div className="card">
       <h2>Login</h2>
+      <p>Log in to manage your business or explore businesses, services, events, and bookings.</p>
       <form onSubmit={onSubmit}>
         <div className="form-control">
           <label>Email</label>
-          <input value={email} onChange={(e) => setEmail(e.target.value)} />
+          <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} />
         </div>
         <div className="form-control">
           <label>Password</label>
@@ -39,7 +40,7 @@ const Login = ({ onLogin }) => {
         <button className="btn" type="submit">Login</button>
       </form>
       <p style={{ marginTop: '10px', fontSize: '13px' }}>
-        Use a backend user or the `dev` account for admin-like access.
+        Need an account? <Link to="/signup">Create one</Link>
       </p>
     </div>
   );

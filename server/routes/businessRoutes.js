@@ -3,6 +3,8 @@ const { protect } = require('../middleware/auth');
 const { authorize } = require('../middleware/authorize');
 const {
 	listBusinesses,
+	discoverBusinesses,
+	getMyBusiness,
 	getBusiness,
 	createBusiness,
 	updateBusiness,
@@ -11,8 +13,10 @@ const {
 
 const router = express.Router();
 
+router.get('/discover', protect, discoverBusinesses);
 router.get('/', protect, authorize('dev'), listBusinesses);
-router.post('/', protect, authorize('dev', 'admin', 'owner'), createBusiness);
+router.get('/me', protect, getMyBusiness);
+router.post('/', protect, authorize('dev', 'admin', 'owner', 'customer'), createBusiness);
 router.get('/:id', protect, authorize('dev', 'admin', 'owner'), getBusiness);
 router.put('/:id', protect, authorize('dev', 'admin', 'owner'), updateBusiness);
 router.delete('/:id', protect, authorize('dev', 'admin', 'owner'), deleteBusiness);

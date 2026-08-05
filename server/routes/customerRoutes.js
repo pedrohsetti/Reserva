@@ -5,6 +5,8 @@ const { blockTenantRequests } = require('../middleware/tenant');
 const {
 	listCustomers,
 	createCustomer,
+	getMyCustomer,
+	joinBusiness,
 	getCustomer,
 	updateCustomer,
 	deleteCustomer,
@@ -12,11 +14,18 @@ const {
 
 const router = express.Router();
 
-router.use(protect, blockTenantRequests, authorize('dev', 'admin', 'owner', 'staff'));
+router.post('/join-business/:businessId', protect, authorize('customer'), joinBusiness);
+router.use(protect, blockTenantRequests);
+router.get('/me', authorize('customer'), getMyCustomer);
+
+// Customer profile endpoints (accessible by customers and staff/admin/owner)
+router.get('/:id', authorize('dev', 'admin', 'owner', 'staff', 'customer'), getCustomer);
+router.put('/:id', authorize('dev', 'admin', 'owner', 'staff', 'customer'), updateCustomer);
+
+// List/Create/Delete endpoints (staff/admin/owner only)
+router.use(authorize('dev', 'admin', 'owner', 'staff'));
 router.get('/', listCustomers);
 router.post('/', createCustomer);
-router.get('/:id', getCustomer);
-router.put('/:id', updateCustomer);
 router.delete('/:id', authorize('dev', 'admin', 'owner'), deleteCustomer);
 
 module.exports = router;
