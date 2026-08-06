@@ -4,6 +4,7 @@ const jwt = require('jsonwebtoken');
 const Customer = require('../models/Customer');
 const Appointment = require('../models/Appointment');
 const Staff = require('../models/Staff');
+const Event = require('../models/Event');
 const Member = require('../models/Member');
 const User = require('../models/User');
 const Business = require('../models/Business');
@@ -12,27 +13,46 @@ const { syncContactUser } = require('../utils/contactUser');
 
 const accessToken = (user) => jwt.sign({ id: user._id, role: user.role, businessId: user.businessId || null }, env.JWT_ACCESS_TOKEN, { expiresIn: '15m' });
 
-// @desc    Get all customers (filtered for staff - only show customers with appointments for their services)
+// @desc    Get all customers (staff sees only customers linked to own appointments/events)
 // @route   GET /api/customers
 // @access  Private/Admin/Owner/Staff
 const listCustomers = asyncHandler(async (req, res) => {
 	const businessId = req.businessId || req.user.businessId;
 	let filter = { businessId };
 
-	// Staff see only customers that have appointments for their services
+	// Staff see only customers that have appointments with them
+	// or are registered in events assigned to them.
 	if (req.user.role === 'staff') {
 		const staff = await Staff.findOne({ userId: req.user.id, businessId });
 		if (!staff) {
 			return res.json({ customers: [] }); // No staff record found
 		}
 
-		// Find appointments for this staff's services
-		const appointments = await Appointment.find({
-			serviceId: { $in: staff.serviceIds || [] },
+		const appointmentCustomerIds = await Appointment.distinct('customerId', {
 			businessId,
+			staffId: staff._id,
+			status: { $in: ['booked', 'confirmed', 'completed', 'no-show'] },
 		});
 
-		const customerIds = [...new Set(appointments.map((appt) => appt.customerId.toString()))];
+		const eventCustomerUserIds = await Event.aggregate([
+			{ $match: { businessId: new mongoose.Types.ObjectId(businessId), staffIds: staff._id } },
+			{ $unwind: '$registeredUsers' },
+			{ $match: { 'registeredUsers.status': { $ne: 'cancelled' } } },
+			{ $group: { _id: '$registeredUsers.customerId' } },
+		]);
+
+		const eventCustomers = await Customer.find({
+			businessId,
+			userId: { $in: eventCustomerUserIds.map((entry) => entry._id) },
+		}).select('_id');
+
+		const customerIds = [
+			...new Set([
+				...appointmentCustomerIds.map((id) => String(id)),
+				...eventCustomers.map((customer) => String(customer._id)),
+			]),
+		];
+
 		filter._id = { $in: customerIds };
 	}
 

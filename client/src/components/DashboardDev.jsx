@@ -13,24 +13,29 @@ const DashboardDev = ({ user, token }) => {
 		totalAppointments: 0,
 		totalEvents: 0,
 	});
+	const [users, setUsers] = useState([]);
 
 	useEffect(() => {
 		const fetchStats = async () => {
 			try {
 				// Fetch aggregate stats from backend
-				const [businessesRes, appointmentsRes, eventsRes] = await Promise.all([
+				const [businessesRes, usersRes, appointmentsRes, eventsRes] = await Promise.all([
 					fetchWithAuth('/api/businesses', token),
+					fetchWithAuth('/api/users', token),
 					fetchWithAuth('/api/appointments', token),
 					fetchWithAuth('/api/events', token),
 				]);
 
 				const businesses = await businessesRes.json();
+				const usersData = await usersRes.json();
 				const appointments = await appointmentsRes.json();
 				const events = await eventsRes.json();
+				const allUsers = usersData.users || [];
+				setUsers(allUsers);
 
 				setStats({
 					totalBusinesses: businesses.businesses?.length || 0,
-					totalUsers: businesses.businesses?.length * 3 || 0, // Rough estimate
+					totalUsers: allUsers.length,
 					totalAppointments: appointments.appointments?.length || 0,
 					totalEvents: events.events?.length || 0,
 				});
@@ -124,6 +129,41 @@ const DashboardDev = ({ user, token }) => {
 					<strong>Events</strong>
 					<span>Track group events and registrations.</span>
 				</Link>
+			</div>
+
+			<div className="dashboard-recent">
+				<div className="dashboard-recent-header">
+					<h3>All Users</h3>
+					<small>{users.length} total</small>
+				</div>
+				{users.length === 0 ? (
+					<p>No users found.</p>
+				) : (
+					<div style={{ overflowX: 'auto' }}>
+						<table className="dashboard-table">
+							<thead>
+								<tr>
+									<th>Name</th>
+									<th>Email</th>
+									<th>Role</th>
+									<th>Status</th>
+									<th>Business</th>
+								</tr>
+							</thead>
+							<tbody>
+								{users.map((entry) => (
+									<tr key={entry._id || entry.id}>
+										<td>{entry.name || 'N/A'}</td>
+										<td>{entry.email || 'N/A'}</td>
+										<td>{entry.role || 'N/A'}</td>
+										<td>{entry.status || 'active'}</td>
+										<td>{entry.businessId ? String(entry.businessId) : 'Unassigned'}</td>
+									</tr>
+								))}
+							</tbody>
+						</table>
+					</div>
+				)}
 			</div>
 		</div>
 	);

@@ -263,6 +263,59 @@
 	line-height: 1.4;
 }
 
+.dashboard-filters {
+	background: white;
+	border-radius: 10px;
+	padding: 16px;
+	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.dashboard-recent {
+	margin-top: 24px;
+	background: white;
+	border-radius: 10px;
+	padding: 20px;
+	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.dashboard-recent-header {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	margin-bottom: 12px;
+}
+
+.dashboard-recent-header h3 {
+	margin: 0;
+	font-size: 1.1rem;
+	color: #2d3748;
+}
+
+.dashboard-recent-header small {
+	color: #718096;
+	font-weight: 600;
+}
+
+.dashboard-table {
+	width: 100%;
+	border-collapse: collapse;
+	font-size: 0.92rem;
+}
+
+.dashboard-table th,
+.dashboard-table td {
+	text-align: left;
+	padding: 10px 8px;
+	border-bottom: 1px solid #e2e8f0;
+}
+
+.dashboard-table th {
+	font-size: 0.78rem;
+	text-transform: uppercase;
+	letter-spacing: 0.4px;
+	color: #718096;
+}
+
 /* Button Styles */
 .btn {
 	display: inline-flex;
@@ -311,6 +364,10 @@
 
 	.quick-grid {
 		grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+	}
+
+	.dashboard-table {
+		font-size: 0.85rem;
 	}
 
 	.appointment-item {

@@ -38,6 +38,9 @@ To run the application locally, follow these steps:
    ```bash
         # Start the backend server
         npm run server
+        # Start the frontend client
+        cd client
+        npm start
    ```
 
 
@@ -52,12 +55,13 @@ To run the application locally, follow these steps:
 
 Roles include:
 
+- Developer
 - Platform Admin
 - Business Owner
 - Staff Member
 - Customer
 
-## Business Management
+### Business Management
 
 Each business has its own workspace containing:
 
@@ -73,7 +77,7 @@ Each business has its own workspace containing:
 
 Reserva uses a **multi-tenant architecture**, ensuring each business only has access to its own data.
 
-## Appointment System
+### Appointment System
 
 Customers can:
 
@@ -81,73 +85,63 @@ Customers can:
 - Select a staff member
 - Choose an available date and time
 - Book appointments
-- Reschedule
-- Cancel appointments
+- Reschedule (TBD)
+- Cancel appointments (TBD)
 - View booking history
+
+Staff members can:
+
+- View their schedule
+- Manage appointments
 
 Business owners can:
 
-- Configure working hours
 - Set appointment durations
-- Add breaks and buffer times
-- Block unavailable dates
 - Manage staff schedules
 
-## Event Management
+### Event Management
 
-Businesses can organize:
-
-- Workshops
-- Classes
-- Webinars
-- Conferences
-- Community events
-- Training sessions
-
-Each event supports:
+Businesses and staff can organize events that support:
 
 - Capacity limits
-- Waiting lists
+- Waiting lists (TBD)
 - Registration
-- QR code check-in
-- Multiple ticket types
+- QR code check-in (TBD)
+- Multiple ticket types (TBD)
 - Event analytics
 
-## Customer Management (CRM)
+### Customer Management (CRM)
 
 Every customer has a dedicated profile including:
 
 - Contact information
+- Search for services
 - Appointment history
 - Event attendance
-- Loyalty status
+- Loyalty status (TBD)
 
-This allows businesses to build stronger relationships with returning customers.
-
-## Staff Management
+### Staff Management
 
 Business owners can:
 
 - Create staff accounts
 - Assign services
 - Configure working schedules
-- Track appointments
-- Monitor workload
+- Manage appointments
 
-## Dashboard & Analytics
+### Dashboard & Analytics
 
 The dashboard provides real-time insights such as:
 
 - Daily appointments
 - Upcoming events
 - Revenue overview
-- Most popular services
-- Customer growth
-- Attendance rate
-- No-show rate
-- Staff utilization
+- Customer growth (TBD)
+- Attendance rate (TBD)
 
-## Notifications
+## Future implementations:
+
+### Notifications
 
 Notifications are logged for:
 
@@ -156,14 +150,11 @@ Notifications are logged for:
 - Event reminders
 - Cancellations
 - Schedule changes
-
-### Future implementations:
-
 - Email notifications
 - Push notifications
 - SMS notifications
 
-## QR Check-In
+### QR Check-In
 
 Every booking or event registration generates a QR code.
 
@@ -173,7 +164,7 @@ Businesses can scan customer QR codes during check-in to instantly mark attendan
 - Attendance tracking
 - Event statistics
 
-## Payments
+### Payments
 
 Businesses can choose between:
 
@@ -181,21 +172,19 @@ Businesses can choose between:
 - Deposit only
 - Pay on arrival
 
-### Future implementations:
-
 Support for online payments through:
 
 - Stripe
 - PayPal
 - MobilePay
 
-## AI Features *(Planned)*
+### AI Features
 
 Reserva aims to integrate AI to improve business operations.
 
 Examples include:
 
-### AI Business Insights
+#### AI Business Insights
 
 Receive insights like:
 
@@ -203,7 +192,7 @@ Receive insights like:
 
 > Haircut customers typically return every 4 weeks.
 
-### AI Scheduling
+#### AI Scheduling
 
 Automatically suggest the best appointment times while minimizing schedule gaps.
 
@@ -259,11 +248,12 @@ reserva/
 │
 ├── client/
 │   ├── src/
-│   ├── components/
-│   ├── pages/
-│   ├── hooks/
-│   ├── services/
-│   └── utils/
+│       ├── components/
+│       ├── pages/
+│       ├── styles/
+│       ├── features/
+│       ├── features/
+│       └── utils/
 │
 ├── server/
 │   ├── controllers/
@@ -336,19 +326,19 @@ Check-in at event
 ### Version 1 (delivered)
 
 - Authentication
+- Profile management
 - Businesses
 - Services
 - Staff
 - Customers
 - Appointments
-- Calendar
+- Events
 - Dashboard
 
 ---
 
 ### Version 2
 
-- Password reset
 - Recurring events
 - QR check-in
 - Waiting lists
