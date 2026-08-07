@@ -37,6 +37,7 @@ To run the application locally, follow these steps:
 
    ```bash
         # Start the backend server
+        cd .
         npm run server
         # Start the frontend client
         cd client
