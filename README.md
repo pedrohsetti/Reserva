@@ -9,7 +9,8 @@ This is the repo for the **Reserva** project, a full-stack web application built
 It's a full-stack web application built with the **MERN stack** that enables small businesses to manage appointments, events, staff, customers, and business operations from a single platform.
 
 ## Demo
-
+Part 1: https://www.loom.com/share/d11a205d392640d680d15ee14f24e518
+Part 2: https://www.loom.com/share/51f60127587742728c6db662b4d8db04
 
 ## Usage
 
